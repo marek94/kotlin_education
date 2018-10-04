@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView
 import com.example.mpawluch.weatherapp.R
 import com.example.mpawluch.weatherapp.ui.activities.adapters.ForecastListAdapter
 import com.example.mpawluch.weatherapp.domain.commands.RequestForecastCommand
-import com.example.mpawluch.weatherapp.domain.model.Forecast
+import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.find
 import org.jetbrains.anko.toast
@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val forecastList: RecyclerView = find(R.id.forecast_list)
         forecastList.layoutManager = LinearLayoutManager(this)
 
         val url = "http://api.openweathermap.org/data/2.5/forecast/daily?" +
@@ -27,12 +26,7 @@ class MainActivity : AppCompatActivity() {
         doAsync {
             val result = RequestForecastCommand("94043").execute()
             uiThread {
-                forecastList.adapter = ForecastListAdapter(result,
-                        object : ForecastListAdapter.OnItemClickListener {
-                            override fun invoke(forecast: Forecast) {
-                                toast(forecast.date)
-                            }
-                        })
+                forecastList.adapter = ForecastListAdapter(result) { toast(it.date)}
             }
         }
     }
